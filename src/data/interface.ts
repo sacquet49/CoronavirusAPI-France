@@ -22,3 +22,15 @@ export interface CovidData {
     pos_7j: number;
     cv_dose1: any;
 }
+
+export const CSV = [
+    {nom: 'covid-hosp-txad-age-fra', id: '', data: []},
+    {nom: 'covid-hosp-txad-reg', id: '', data: []},
+    {nom: 'covid-hosp-txad-fra', id: '', data: []},
+    {nom: 'donnees-hospitalieres-classe-age-hebdo-covid19', id: '', data: []},
+    {nom: 'covid-hospit-incid-reg', id: '', data: []},
+    {nom: 'donnees-hospitalieres-covid19', id: '', data: []},
+    {nom: 'donnees-hospitalieres-nouveaux-covid19', id: '', data: []},
+    {nom: 'donnees-hospitalieres-classe-age-covid19', id: '', data: []},
+    {nom: 'donnees-hospitalieres-etablissements-covid19', id: '', data: []}
+];
