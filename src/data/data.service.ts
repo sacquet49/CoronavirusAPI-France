@@ -201,6 +201,34 @@ export class DataService {
         return dataByRegion.length ? dataByRegion : 'No data found';
     }
 
+    async getDataByTypeAndSexAndDepartement(
+        filtre: string,
+        sex: string,
+        departement: string,
+    ): Promise<CovidData[] | string> {
+        const covidDataListDEP: any[] = await this.s3Service.getFileS3(
+            'donnees-hospitalieres-covid19.json',
+        );
+        const hospitaliseParJour = covidDataListDEP.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = []))
+            .push(v), r), {});
+        if (departement && departement !== 'undefined') {
+            return Object.entries(hospitaliseParJour).map((hospJour: any[]) => hospJour['1']
+                .filter((ha: any) => ha.dep === departement)
+                .reduce((r, v, i, a, k = v.sexe) => ((r[k] || (r[k] = [])).push(v[filtre]) , r), {})[sex])
+                .map(ha => this.reduceAdd(ha));
+        } else {
+            return Object.entries(hospitaliseParJour).map((hospJour: any[]) => hospJour['1']
+                .reduce((r, v, i, a, k = v.sexe) => ((r[k] || (r[k] = [])).push(v[filtre]) , r), {})[sex])
+                .map(ha => this.reduceAdd(ha));
+        }
+    }
+
+    reduceAdd(array: Array<any>): any {
+        // tslint:disable-next-line:radix
+        const reducer = (accumulator, currentValue) => parseInt(accumulator) + parseInt(currentValue);
+        return array?.reduce(reducer);
+    }
+
     updateData(): void {
         this.taskService.getCovidDataFromFile();
     }

@@ -80,6 +80,15 @@ export class DataController {
         return await this.dataService.getDataByRegionNameByDate(name, date);
     }
 
+    @Get(':filtre/:sex/:departement')
+    async getDataBySexAndDepartement(
+        @Param('filtre') filtre: string,
+        @Param('sex') sex: string,
+        @Param('departement') departement: string,
+    ): Promise<CovidData[] | string> {
+        return await this.dataService.getDataByTypeAndSexAndDepartement(filtre, sex, departement);
+    }
+
     @Get('update')
     updateData(): void {
         return this.dataService.updateData();
