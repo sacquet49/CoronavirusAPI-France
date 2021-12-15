@@ -102,11 +102,12 @@ export class TaskService {
 
         const uploadFileToS3 = (result, i) => {
             uploadFileS3(result.data, CSV[i].nom + '.json');
+            new Promise(resolve => setTimeout(resolve, 20000));
             console.log(CSV[i].nom + '.json : File has been uploaded');
         }
 
-        getDataByDep();
-        getDataForFrance();
+        // getDataByDep();
+        // getDataForFrance();
         getAllCsv();
     }
 }
