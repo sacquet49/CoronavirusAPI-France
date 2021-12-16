@@ -34,3 +34,14 @@ export const CSV = [
     {nom: 'donnees-hospitalieres-classe-age-covid19', id: '', data: []},
     {nom: 'donnees-hospitalieres-etablissements-covid19', id: '', data: []}
 ];
+
+export const TRANCHE_AGE = [{indice: '9', label: '0 - 9', color: '#0050ff', data: [], dataP: []},
+    {indice: '19', label: '10 - 19', color: '#ff00e5', data: [], dataP: []},
+    {indice: '29', label: '20 - 29', color: '#00f7ff', data: [], dataP: []},
+    {indice: '39', label: '30 - 39', color: '#6aff00', data: [], dataP: []},
+    {indice: '49', label: '40 - 49', color: '#ff0000', data: [], dataP: []},
+    {indice: '59', label: '50 - 59', color: '#ff7700', data: [], dataP: []},
+    {indice: '69', label: '60 - 69', color: '#9500ff', data: [], dataP: []},
+    {indice: '79', label: '70 - 79', color: '#d0ff00', data: [], dataP: []},
+    {indice: '89', label: '80 - 89', color: '#0b0b18', data: [], dataP: []},
+    {indice: '90', label: '>90', color: '#02a705', data: [], dataP: []}];

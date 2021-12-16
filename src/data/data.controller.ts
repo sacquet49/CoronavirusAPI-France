@@ -99,6 +99,16 @@ export class DataController {
         return await this.dataService.getLabelsDay();
     }
 
+    @Get('trancheAge/:filtre/:dateMin/:dateMax/:region')
+    async getHospitaliseByTrancheAge(
+        @Param('filtre') filtre: string,
+        @Param('dateMin') dateMin: string,
+        @Param('dateMax') dateMax: string,
+        @Param('region') region: string,
+    ): Promise<any[] | string> {
+        return await this.dataService.getHospitaliseByTrancheAge(filtre, dateMin, dateMax, region);
+    }
+
     @Get('update')
     updateData(): void {
         return this.dataService.updateData();
