@@ -100,13 +100,21 @@ export class DataService {
             'donnees-hospitalieres-classe-age-covid19.json',
         );
         const trancheAgeData = trancheAge.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v), r), {});
-        const hospitalise = [];
-        if (trancheAgeData[date]) {
-            Object.entries(trancheAgeData[date]
-                .reduce((r, v, i, a, k = v.cl_age90) => ((r[k] || (r[k] = [])).push(v[filtre]) , r), {}))
-                .map((ha: any) => hospitalise.push(this.reduceAdd(ha['1'])));
-        }
-        return hospitalise.slice(1, 11);
+        return this.gethospitaliseByFilterAndDate(trancheAgeData, filtre, date);
+    }
+
+    async getHospitaliseVariationTrancheAgeByDate(
+        filtre: string,
+        dateMin: string,
+        dateMax: string,
+    ): Promise<any[] | string> {
+        const trancheAge: any[] = await this.s3Service.getFileS3(
+            'donnees-hospitalieres-classe-age-covid19.json',
+        );
+        const trancheAgeData = trancheAge.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v), r), {});
+        const dataRea = this.gethospitaliseByFilterAndDate(trancheAgeData, filtre, dateMin);
+        const dataRea2 = this.gethospitaliseByFilterAndDate(trancheAgeData, filtre, dateMax);
+        return dataRea.map((v, i) => this.roundDecimal((100 * (dataRea2[i] - v)) / v, 2));
     }
 
     getHospitaliseByAge(trancheAgeData: any[], typeStatSelected: string, dateMin: string, dateMax: string, region: string): any[] {
@@ -125,6 +133,16 @@ export class DataService {
                 .map((ha: any) => hospitalise.push(this.reduceAdd(ha['1'])));
         }
         return hospitalise?.slice(1);
+    }
+
+    gethospitaliseByFilterAndDate(hospitaliseParJour: any[], filtre: string, date: string): any[] {
+        const hospitalise = [];
+        if (hospitaliseParJour[date]) {
+            Object.entries(hospitaliseParJour[date]
+                .reduce((r, v, i, a, k = v.cl_age90) => ((r[k] || (r[k] = [])).push(v[filtre]) , r), {}))
+                .map((ha: any) => hospitalise.push(this.reduceAdd(ha['1'])));
+        }
+        return hospitalise.slice(1, 11);
     }
 
     reduceAdd(array: Array<any>): any {

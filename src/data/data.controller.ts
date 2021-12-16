@@ -51,6 +51,15 @@ export class DataController {
         return await this.dataService.getHospitaliseTrancheAgeByDate(filtre, date);
     }
 
+    @Get('hospitalise/variation/:filtre/trancheAge/byDate/:dateMin/:dateMax')
+    async getHospitaliseVariationTrancheAgeByDate(
+        @Param('filtre') filtre: string,
+        @Param('dateMin') dateMin: string,
+        @Param('dateMax') dateMax: string
+    ): Promise<any[] | string> {
+        return await this.dataService.getHospitaliseVariationTrancheAgeByDate(filtre, dateMin, dateMax);
+    }
+
     @Get('update')
     updateData(): void {
         return this.dataService.updateData();
