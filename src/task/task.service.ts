@@ -50,40 +50,6 @@ export class TaskService {
             }
         };
 
-        const getDataByDep = async (): Promise<void> => {
-            const req = await axios({
-                method: 'GET',
-                url: 'https://www.data.gouv.fr/fr/datasets/r/5c4e1452-3850-4b59-b11c-3dd51d7fb8b5',
-                responseType: 'stream',
-            });
-            const csv = req.data.pipe(new StringStream());
-            Papa.parse(csv, {
-                dynamicTyping: true,
-                header: true,
-                complete: function (result) {
-                    uploadFileS3(result.data, 'covidDataDep.json');
-                    console.log('File has been uploaded');
-                },
-            });
-        };
-
-        const getDataForFrance = async (): Promise<void> => {
-            const req = await axios({
-                method: 'GET',
-                url: 'https://www.data.gouv.fr/fr/datasets/r/f335f9ea-86e3-4ffa-9684-93c009d5e617',
-                responseType: 'stream',
-            });
-            const csv = req.data.pipe(new StringStream());
-            Papa.parse(csv, {
-                dynamicTyping: true,
-                header: true,
-                complete: function (result) {
-                    uploadFileS3(result.data, 'covidDataFR.json');
-                    console.log('File has been uploaded');
-                },
-            });
-        };
-
         const getDataByUrl = async (url, i): Promise<void> => {
             const req = await axios({
                 method: 'GET',
@@ -106,8 +72,6 @@ export class TaskService {
             console.log(CSV[i].nom + '.json : File has been uploaded');
         }
 
-        // getDataByDep();
-        // getDataForFrance();
         getAllCsv();
     }
 }
