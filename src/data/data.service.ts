@@ -213,7 +213,7 @@ export class DataService {
             .push(v), r), {});
         if (departement && departement !== 'undefined') {
             return Object.entries(hospitaliseParJour).map((hospJour: any[]) => hospJour['1']
-                .filter((ha: any) => ha.dep === departement)
+                .filter((ha: any) => ha.dep === parseInt(departement))
                 .reduce((r, v, i, a, k = v.sexe) => ((r[k] || (r[k] = [])).push(v[filtre]) , r), {})[sex])
                 .map(ha => this.reduceAdd(ha));
         } else {
@@ -221,6 +221,24 @@ export class DataService {
                 .reduce((r, v, i, a, k = v.sexe) => ((r[k] || (r[k] = [])).push(v[filtre]) , r), {})[sex])
                 .map(ha => this.reduceAdd(ha));
         }
+    }
+
+    async getDecesByDay(): Promise<CovidData[] | string> {
+        const covidDece: any[] = await this.s3Service.getFileS3(
+            'donnees-hospitalieres-nouveaux-covid19.json',
+        );
+        const decesParJour = covidDece.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v), r), {});
+        return Object.entries(decesParJour).map((hospJour: any[]) => hospJour['1']
+            .reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v.incid_dc) , r), {}))
+            .map((j: any[]) => this.reduceAdd(Object.values(j)['0']));
+    }
+
+    async getLabelsDay(): Promise<CovidData[] | string> {
+        const covidLabelDay: any[] = await this.s3Service.getFileS3(
+            'donnees-hospitalieres-nouveaux-covid19.json',
+        );
+        const covidLabels = covidLabelDay.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v), r), {});
+        return Object.entries(covidLabels).map((hospJour: any[]) => hospJour['0']);
     }
 
     reduceAdd(array: Array<any>): any {

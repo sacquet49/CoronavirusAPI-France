@@ -89,6 +89,16 @@ export class DataController {
         return await this.dataService.getDataByTypeAndSexAndDepartement(filtre, sex, departement);
     }
 
+    @Get('decesByDay')
+    async getDecesByDay(): Promise<CovidData[] | string> {
+        return await this.dataService.getDecesByDay();
+    }
+
+    @Get('labelsDay')
+    async getLabelsDay(): Promise<CovidData[] | string> {
+        return await this.dataService.getLabelsDay();
+    }
+
     @Get('update')
     updateData(): void {
         return this.dataService.updateData();
