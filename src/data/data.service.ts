@@ -106,8 +106,7 @@ export class DataService {
                 .reduce((r, v, i, a, k = v.cl_age90) => ((r[k] || (r[k] = [])).push(v[filtre]) , r), {}))
                 .map((ha: any) => hospitalise.push(this.reduceAdd(ha['1'])));
         }
-        hospitalise[0] = hospitalise[10];
-        return hospitalise.slice(0, 10);
+        return hospitalise.slice(1, 11);
     }
 
     getHospitaliseByAge(trancheAgeData: any[], typeStatSelected: string, dateMin: string, dateMax: string, region: string): any[] {
