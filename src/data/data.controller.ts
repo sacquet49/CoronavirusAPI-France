@@ -99,6 +99,13 @@ export class DataController {
         return await this.dataService.getLabelsDay();
     }
 
+    @Get('labelsDayByDate/:dateMin/:dateMax')
+    async getLabelsDayByDate(@Param('dateMin') dateMin: string,
+                             @Param('dateMax') dateMax: string
+    ): Promise<CovidData[] | string> {
+        return await this.dataService.getLabelsDayByDate(dateMin, dateMax);
+    }
+
     @Get('trancheAge/:filtre/:dateMin/:dateMax/:region')
     async getHospitaliseByTrancheAge(
         @Param('filtre') filtre: string,

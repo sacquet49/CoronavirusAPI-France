@@ -246,6 +246,15 @@ export class DataService {
         return Object.entries(covidLabels).map((hospJour: any[]) => hospJour['0']);
     }
 
+    async getLabelsDayByDate(dateMin, dateMax): Promise<any[] | string> {
+        const covidLabelDay: any[] = await this.s3Service.getFileS3(
+            'donnees-hospitalieres-classe-age-covid19.json',
+        );
+        const trancheAgeData = covidLabelDay.reduce((r, v, i, a, k = v.cl_age90) => ((r[k] || (r[k] = [])).push(v), r), {});
+        return Object.entries(trancheAgeData).map(hospJour => hospJour['0'])
+            .filter((ha: any) => (dateMin && dateMax && dateMax !== 'undefined' && dateMin !== 'undefined') ? (ha >= dateMin && ha <= dateMax) : true);
+    }
+
     async getHospitaliseByTrancheAge(
         typeStatSelected: string,
         dateMin: string,
@@ -275,12 +284,12 @@ export class DataService {
 
     getHospitaliseByAge(trancheAgeData: any[], typeStatSelected: string, dateMin: string, dateMax: string, region: string): any[] {
         const hospitalise = [];
-        if(trancheAgeData) {
+        if (trancheAgeData) {
             Object.entries(trancheAgeData?.filter((ha: any) => {
                 if (dateMin && dateMax && dateMax !== 'undefined' && dateMin !== 'undefined') {
-                    return (ha.jour >= dateMin && new Date(ha.jour) <= this.addDays(dateMin, 1)) && ((region && region !== 'undefined') ? ha.reg === region : true);
-                } else if (region && region !== 'undefined') {
-                    return ha.reg === region;
+                    return (ha.jour >= dateMin && new Date(ha.jour) <= this.addDays(dateMax, 1)) && ((region && region !== 'undefined' && region !== 'null') ? ha.reg === region : true);
+                } else if (region && region !== 'undefined' && region !== 'null') {
+                    return ha.reg === parseInt(region);
                 } else {
                     return true;
                 }
