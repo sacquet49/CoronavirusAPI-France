@@ -250,7 +250,7 @@ export class DataService {
         const covidLabelDay: any[] = await this.s3Service.getFileS3(
             'donnees-hospitalieres-classe-age-covid19.json',
         );
-        const trancheAgeData = covidLabelDay.reduce((r, v, i, a, k = v.cl_age90) => ((r[k] || (r[k] = [])).push(v), r), {});
+        const trancheAgeData = covidLabelDay.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v), r), {});
         return Object.entries(trancheAgeData).map(hospJour => hospJour['0'])
             .filter((ha: any) => (dateMin && dateMax && dateMax !== 'undefined' && dateMin !== 'undefined') ? (ha >= dateMin && ha <= dateMax) : true);
     }

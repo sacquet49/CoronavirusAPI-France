@@ -99,7 +99,7 @@ export class DataController {
         return await this.dataService.getLabelsDay();
     }
 
-    @Get('labelsDayByDate/:dateMin/:dateMax')
+    @Get('labelsDay/ByDate/:dateMin/:dateMax')
     async getLabelsDayByDate(@Param('dateMin') dateMin: string,
                              @Param('dateMax') dateMax: string
     ): Promise<CovidData[] | string> {
