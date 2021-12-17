@@ -24,15 +24,15 @@ export interface CovidData {
 }
 
 export const CSV = [
-    {nom: 'covid-hosp-txad-age-fra', id: '', data: []},
-    {nom: 'covid-hosp-txad-reg', id: '', data: []},
-    {nom: 'covid-hosp-txad-fra', id: '', data: []},
-    {nom: 'donnees-hospitalieres-classe-age-hebdo-covid19', id: '', data: []},
-    {nom: 'covid-hospit-incid-reg', id: '', data: []},
-    {nom: 'donnees-hospitalieres-covid19', id: '', data: []},
-    {nom: 'donnees-hospitalieres-nouveaux-covid19', id: '', data: []},
-    {nom: 'donnees-hospitalieres-classe-age-covid19', id: '', data: []},
-    {nom: 'donnees-hospitalieres-etablissements-covid19', id: '', data: []}
+    {nom: 'covid-hosp-txad-age-fra', id: '', data: [], date: ''},
+    {nom: 'covid-hosp-txad-reg', id: '', data: [], date: ''},
+    {nom: 'covid-hosp-txad-fra', id: '', data: [], date: ''},
+    {nom: 'donnees-hospitalieres-classe-age-hebdo-covid19', id: '', data: [], date: ''},
+    {nom: 'covid-hospit-incid-reg', id: '', data: [], date: ''},
+    {nom: 'donnees-hospitalieres-covid19', id: '', data: [], date: ''},
+    {nom: 'donnees-hospitalieres-nouveaux-covid19', id: '', data: [], date: ''},
+    {nom: 'donnees-hospitalieres-classe-age-covid19', id: '', data: [], date: ''},
+    {nom: 'donnees-hospitalieres-etablissements-covid19', id: '', data: [], date: ''}
 ];
 
 export const TRANCHE_AGE = [{indice: '9', label: '0 - 9', color: '#0050ff', data: [], dataP: []},

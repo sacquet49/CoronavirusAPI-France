@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import {S3Service} from './../s3/s3.service';
 import {TaskService} from './../task/task.service';
-import {CovidData, TRANCHE_AGE} from './interface';
+import {CSV, TRANCHE_AGE} from './interface';
 import {Injectable} from '@nestjs/common';
-import {format, startOfYesterday} from 'date-fns';
-import * as helper from '../helpers';
 
 @Injectable()
 export class DataService {
@@ -21,9 +19,7 @@ export class DataService {
         sex: string,
         departement: string,
     ): Promise<any[] | string> {
-        const covidDataListDEP: any[] = await this.s3Service.getFileS3(
-            'donnees-hospitalieres-covid19.json',
-        );
+        const covidDataListDEP: any[] = await this.getData('donnees-hospitalieres-covid19');
         const hospitaliseParJour = covidDataListDEP.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = []))
             .push(v), r), {});
         if (departement && departement !== 'undefined') {
@@ -39,9 +35,7 @@ export class DataService {
     }
 
     async getDecesByDay(): Promise<any[] | string> {
-        const covidDece: any[] = await this.s3Service.getFileS3(
-            'donnees-hospitalieres-nouveaux-covid19.json',
-        );
+        const covidDece: any[] = await this.getData('donnees-hospitalieres-nouveaux-covid19');
         const decesParJour = covidDece.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v), r), {});
         return Object.entries(decesParJour).map((hospJour: any[]) => hospJour['1']
             .reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v.incid_dc) , r), {}))
@@ -49,17 +43,13 @@ export class DataService {
     }
 
     async getLabelsDay(): Promise<any[] | string> {
-        const covidLabelDay: any[] = await this.s3Service.getFileS3(
-            'donnees-hospitalieres-nouveaux-covid19.json',
-        );
+        const covidLabelDay: any[] = await this.getData('donnees-hospitalieres-nouveaux-covid19');
         const covidLabels = covidLabelDay.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v), r), {});
         return Object.entries(covidLabels).map((hospJour: any[]) => hospJour['0']);
     }
 
     async getLabelsDayByDate(dateMin, dateMax): Promise<any[] | string> {
-        const covidLabelDay: any[] = await this.s3Service.getFileS3(
-            'donnees-hospitalieres-classe-age-covid19.json',
-        );
+        const covidLabelDay: any[] = await this.getData('donnees-hospitalieres-classe-age-covid19');
         const trancheAgeData = covidLabelDay.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v), r), {});
         return Object.entries(trancheAgeData).map(hospJour => hospJour['0'])
             .filter((ha: any) => (dateMin && dateMax && dateMax !== 'undefined' && dateMin !== 'undefined') ? (ha >= dateMin && ha <= dateMax) : true);
@@ -71,9 +61,7 @@ export class DataService {
         dateMax: string,
         region: string
     ): Promise<any[] | string> {
-        const trancheAge: any[] = await this.s3Service.getFileS3(
-            'donnees-hospitalieres-classe-age-covid19.json',
-        );
+        const trancheAge: any[] = await this.getData('donnees-hospitalieres-classe-age-covid19');
         const trancheAgeData = trancheAge.reduce((r, v, i, a, k = v.cl_age90) => ((r[k] || (r[k] = [])).push(v), r), {});
         const evolutionByAge = [];
         TRANCHE_AGE.forEach(t => {
@@ -96,9 +84,7 @@ export class DataService {
         filtre: string,
         date: string,
     ): Promise<any[] | string> {
-        const trancheAge: any[] = await this.s3Service.getFileS3(
-            'donnees-hospitalieres-classe-age-covid19.json',
-        );
+        const trancheAge: any[] = await this.getData('donnees-hospitalieres-classe-age-covid19');
         const trancheAgeData = trancheAge.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v), r), {});
         return this.gethospitaliseByFilterAndDate(trancheAgeData, filtre, date);
     }
@@ -108,9 +94,7 @@ export class DataService {
         dateMin: string,
         dateMax: string,
     ): Promise<any[] | string> {
-        const trancheAge: any[] = await this.s3Service.getFileS3(
-            'donnees-hospitalieres-classe-age-covid19.json',
-        );
+        const trancheAge: any[] = await this.getData('donnees-hospitalieres-classe-age-covid19');
         const trancheAgeData = trancheAge.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v), r), {});
         const dataRea = this.gethospitaliseByFilterAndDate(trancheAgeData, filtre, dateMin);
         const dataRea2 = this.gethospitaliseByFilterAndDate(trancheAgeData, filtre, dateMax);
@@ -161,5 +145,20 @@ export class DataService {
         precision = precision || 2;
         const tmp = Math.pow(10, precision);
         return Math.round(nombre * tmp) / tmp;
+    }
+
+    async getData(dataFile): Promise<any[]> {
+        const today = new Date().toISOString().slice(0, 10);
+        const csvLigne = CSV.find(csv => csv.nom === dataFile);
+        if(csvLigne.date === today) {
+            return [...csvLigne.data];
+        } else {
+            const covidData: any[] = await this.s3Service.getFileS3(
+                dataFile + '.json',
+            );
+            csvLigne.date = today;
+            csvLigne.data = [...covidData];
+            return covidData;
+        }
     }
 }
