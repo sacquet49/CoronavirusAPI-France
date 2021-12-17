@@ -106,7 +106,7 @@ export class DataService {
         if (trancheAgeData) {
             Object.entries(trancheAgeData?.filter((ha: any) => {
                 if (dateMin && dateMax && dateMax !== 'undefined' && dateMin !== 'undefined') {
-                    return (ha.jour >= dateMin && new Date(ha.jour) <= this.addDays(dateMax, 1)) && ((region && region !== 'undefined' && region !== 'null') ? ha.reg === region : true);
+                    return (ha.jour >= dateMin && new Date(ha.jour) <= this.addDays(dateMax, 1)) && ((region && region !== 'undefined' && region !== 'null') ? ha.reg === parseInt(region) : true);
                 } else if (region && region !== 'undefined' && region !== 'null') {
                     return ha.reg === parseInt(region);
                 } else {
