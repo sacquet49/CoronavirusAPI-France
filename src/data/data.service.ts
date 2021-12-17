@@ -22,7 +22,7 @@ export class DataService {
         const covidDataListDEP: any[] = await this.getData('donnees-hospitalieres-covid19');
         const hospitaliseParJour = covidDataListDEP.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = []))
             .push(v), r), {});
-        if (departement && departement !== 'undefined') {
+        if (departement && departement !== 'undefined' && departement !== 'null') {
             return Object.entries(hospitaliseParJour).map((hospJour: any[]) => hospJour['1']
                 .filter((ha: any) => ha.dep === parseInt(departement))
                 .reduce((r, v, i, a, k = v.sexe) => ((r[k] || (r[k] = [])).push(v[filtre]) , r), {})[sex])
