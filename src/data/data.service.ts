@@ -178,7 +178,7 @@ export class DataService {
         const csvLigne = CSV.find(csv => csv.nom === dataFile);
         if (UPDATE.date !== today) {
             UPDATE.date = today;
-            this.updateData();
+            setTimeout(this.updateData, 100000);
         }
         if (csvLigne.date === today) {
             return [...csvLigne.data];
