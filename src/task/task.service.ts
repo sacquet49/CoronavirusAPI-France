@@ -5,7 +5,6 @@ import {Cron, CronExpression} from '@nestjs/schedule';
 import axios from 'axios';
 import {PutObjectCommand, PutObjectCommandOutput, S3Client,} from '@aws-sdk/client-s3';
 import {CSV} from "../data/interface";
-
 const {StringStream} = require('scramjet');
 const Papa = require('papaparse');
 
