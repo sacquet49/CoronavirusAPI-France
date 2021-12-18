@@ -48,15 +48,16 @@ export class DataService {
             .filter((ha: any) => {
                 if (dateMin && dateMax && dateMax !== 'undefined' && dateMin !== 'undefined') {
                     return (ha.jour >= dateMin && new Date(ha.jour) <= this.addDays(dateMax, 1))
-                        && ((departement && departement !== 'undefined' && departement !== 'null') ? ha.reg === parseInt(departement) : true);
+                        && ((departement && departement !== 'undefined' && departement !== 'null') ? ha.dep === parseInt(departement) : true);
                 } else if (departement && departement !== 'undefined' && departement !== 'null') {
-                    return ha.reg === parseInt(departement);
+                    return ha.dep === parseInt(departement);
                 } else {
                     return true;
                 }
             })
             .reduce((r, v, i, a, k = v.sexe) => ((r[k] || (r[k] = [])).push(v[filtre]) , r), {})[sex])
-            .map(ha => this.reduceAdd(ha));
+            .map(ha => this.reduceAdd(ha))
+            .filter((a) => a);
     }
 
     async getDecesByDay(): Promise<any[] | string> {
