@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import {S3Service} from './../s3/s3.service';
 import {TaskService} from './../task/task.service';
-import {CSV, TRANCHE_AGE} from './interface';
+import {CSV, TRANCHE_AGE, UPDATE} from './interface';
 import {Injectable} from '@nestjs/common';
 
 @Injectable()
@@ -150,6 +150,10 @@ export class DataService {
     async getData(dataFile): Promise<any[]> {
         const today = new Date().toISOString().slice(0, 10);
         const csvLigne = CSV.find(csv => csv.nom === dataFile);
+        if(UPDATE.date !== today) {
+            UPDATE.date = today;
+            this.updateData();
+        }
         if(csvLigne.date === today) {
             return [...csvLigne.data];
         } else {

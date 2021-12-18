@@ -23,6 +23,8 @@ export interface CovidData {
     cv_dose1: any;
 }
 
+export const UPDATE = {date: ''}
+
 export const CSV = [
     {nom: 'covid-hosp-txad-age-fra', id: '', data: [], date: ''},
     {nom: 'covid-hosp-txad-reg', id: '', data: [], date: ''},
