@@ -16,6 +16,17 @@ export class DataController {
         return await this.dataService.getDataByTypeAndSexAndDepartement(filtre, sex, departement);
     }
 
+    @Get('hospCourant/byDate/:filtre/:sex/:departement/:dateMin/:dateMax')
+    async getDataByTypeAndSexAndDepartementAndDate(
+        @Param('filtre') filtre: string,
+        @Param('sex') sex: string,
+        @Param('departement') departement: string,
+        @Param('dateMin') dateMin: string,
+        @Param('dateMax') dateMax: string,
+    ): Promise<any[] | string> {
+        return await this.dataService.getDataByTypeAndSexAndDepartementAndDate(filtre, sex, departement, dateMin, dateMax);
+    }
+
     @Get('decesByDay')
     async getDecesByDay(): Promise<CovidData[] | string> {
         return await this.dataService.getDecesByDay();

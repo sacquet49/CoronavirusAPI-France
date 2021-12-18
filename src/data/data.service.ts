@@ -34,6 +34,31 @@ export class DataService {
         }
     }
 
+    async getDataByTypeAndSexAndDepartementAndDate(
+        filtre: string,
+        sex: string,
+        departement: string,
+        dateMin: string,
+        dateMax: string
+    ): Promise<any[] | string> {
+        const covidDataListDEP: any[] = await this.getData('donnees-hospitalieres-covid19');
+        const hospitaliseParJour = covidDataListDEP.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = []))
+            .push(v), r), {});
+        return Object.entries(hospitaliseParJour).map((hospJour: any[]) => hospJour['1']
+            .filter((ha: any) => {
+                if (dateMin && dateMax && dateMax !== 'undefined' && dateMin !== 'undefined') {
+                    return (ha.jour >= dateMin && new Date(ha.jour) <= this.addDays(dateMax, 1))
+                        && ((departement && departement !== 'undefined' && departement !== 'null') ? ha.reg === parseInt(departement) : true);
+                } else if (departement && departement !== 'undefined' && departement !== 'null') {
+                    return ha.reg === parseInt(departement);
+                } else {
+                    return true;
+                }
+            })
+            .reduce((r, v, i, a, k = v.sexe) => ((r[k] || (r[k] = [])).push(v[filtre]) , r), {})[sex])
+            .map(ha => this.reduceAdd(ha));
+    }
+
     async getDecesByDay(): Promise<any[] | string> {
         const covidDece: any[] = await this.getData('donnees-hospitalieres-nouveaux-covid19');
         const decesParJour = covidDece.reduce((r, v, i, a, k = v.jour) => ((r[k] || (r[k] = [])).push(v), r), {});
@@ -150,11 +175,11 @@ export class DataService {
     async getData(dataFile): Promise<any[]> {
         const today = new Date().toISOString().slice(0, 10);
         const csvLigne = CSV.find(csv => csv.nom === dataFile);
-        if(UPDATE.date !== today) {
+        if (UPDATE.date !== today) {
             UPDATE.date = today;
             this.updateData();
         }
-        if(csvLigne.date === today) {
+        if (csvLigne.date === today) {
             return [...csvLigne.data];
         } else {
             const covidData: any[] = await this.s3Service.getFileS3(
