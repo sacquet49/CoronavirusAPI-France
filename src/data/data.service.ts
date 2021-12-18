@@ -150,10 +150,10 @@ export class DataService {
     async getData(dataFile): Promise<any[]> {
         const today = new Date().toISOString().slice(0, 10);
         const csvLigne = CSV.find(csv => csv.nom === dataFile);
-        if(UPDATE.date !== today) {
+        /*if(UPDATE.date !== today) {
             UPDATE.date = today;
             this.updateData();
-        }
+        }*/
         if(csvLigne.date === today) {
             return [...csvLigne.data];
         } else {
