@@ -157,7 +157,6 @@ export class DataService {
         if(csvLigne.date === today) {
             return [...csvLigne.data];
         } else {
-            this.updateData();
             const covidData: any[] = await this.s3Service.getFileS3(
                 dataFile + '.json',
             );
